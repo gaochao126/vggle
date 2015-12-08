@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.address.AddressDao">
+	<!-- 1.添加地址 -->
+	<insert id="addAddress" parameterType="AddressDto">
+		insert into t_user_address (addrId, userId, province, city, area, street, code, personName, personPhone, addrStatus )
+		values
+		(#{addrId}, #{userId}, #{province}, #{city}, #{area}, #{street}, #{code}, #{personName}, #{personPhone}, #{addrStatus})
+	</insert>
+	
+	<!-- 2.修改地址 -->
+	<update id="updateAddress" parameterType="AddressDto">
+		update t_user_address set
+			province = #{province}, city = #{city}, area = #{area}, street = #{street}, 
+			code = #{code}, personName = #{personName}, personPhone = #{personPhone}, addrStatus = #{addrStatus}
+		<where>
+			addrId = #{addrId}
+		</where>
+	</update>
+	
+	<!-- 3.删除地址 -->
+	<delete id="deleteAddress" parameterType="AddressDto">
+		delete from t_user_address 
+		<where>
+			addrId = #{addrId}
+		</where>
+	</delete>
+	
+	<!-- 4.修改地址状态 -->
+	<update id="updateAddrStatus" parameterType="AddressDto">
+		update t_user_address set
+			addrStatus = #{addrStatus}	where addrId = #{addrId}
+	</update>
+	
+	<!-- 5.修改原来默认地址为非默认 -->
+	<update id="updateAddrStatusByStatus" parameterType="AddressDto">
+		update t_user_address set
+		addrStatus = 0 where addrStatus = 1
+	</update>
+	
+	<!-- 6.查询用户地址 -->
+	<select id="queryAddrByUserId" parameterType="AddressDto" resultType="AddressDto">
+		select * from t_user_address where userId = #{userId}
+	</select>
+	
+	<!-- 7.根据地址ID查询地址对象 -->
+	<select id="queryAddrByAddrId" parameterType="AddressDto" resultType="AddressDto">
+		select * from t_user_address where addrId = #{addrId}
+	</select>
+</mapper>

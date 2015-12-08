@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.order.OrderDao">
+	
+	<!-- 1.添加订单 -->
+	<insert id="addOrderDto" parameterType="OrderDto">
+		insert into t_commodity_order (orderId, orderNo, commodityId, userId, orderCount, type,
+			orderTime, payTime, orderStatus, reciveAddress, deliveKind, invoiceStatus, refundStatus, invoiceHead, orderMessage, deleteStatus, imageSrc, colorImgId, size, discussStatus, companyId )
+		values
+			(#{orderId}, #{orderNo}, #{commodityId}, #{userId}, #{orderCount}, #{type}, #{orderTime}, #{payTime}, #{orderStatus}, 
+			#{reciveAddress}, #{deliveKind}, #{invoiceStatus}, #{refundStatus}, #{invoiceHead}, #{orderMessage}, #{deleteStatus}, #{imageSrc}, #{colorImgId}, #{size}, #{discussStatus}, #{companyId})
+	</insert>
+	
+	<!-- 2.查询用户所有订单 -->
+	<select id="queryOrderDtoByUserId" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order
+		<where>
+			userId = #{userId} and deleteStatus = #{deleteStatus}
+		</where>
+	</select>
+	
+	<!-- 3.根据订单状态查询用户订单 -->
+	<select id="queryOrderDtoByUserIdAndOrderStatus" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order
+		<where>
+			userId = #{userId} and orderStatus = #{orderStatus} and deleteStatus = #{deleteStatus}
+		</where>
+	</select>
+	
+	<!-- 4.查询所有订单 -->
+	<select id="queryAllOrderDto" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order
+	</select>
+	
+	<!-- 5.修改订单状态 -->
+	<update id="updateOrderReciveStatus" parameterType="OrderDto">
+ 		update t_commodity_order set orderStatus = #{orderStatus}, reciveTime = #{reciveTime}
+ 		where orderId = #{orderId}
+ 	</update>
+	
+	<!-- 6.修改发货时间和订单状态 -->
+	<update id="updateOrderShipmentsTimeAndStatus" parameterType="OrderDto">
+		update t_commodity_order set
+		shipmentsTime = #{shipmentsTime}, orderStatus = #{orderStatus} where orderId = #{orderId} and companyId = #{companyId}
+	</update>
+	
+	<!-- 7.修改评论状态 -->
+	<update id="updateOrderDiscussStatus" parameterType="OrderDto">
+		update t_commodity_order set
+		discussStatus = #{discussStatus} where orderId = #{orderId}
+	</update>
+	
+	<!-- 8.修改删除状态 -->
+	<update id="updateOrderDeleteStatus" parameterType="OrderDto">
+		update t_commodity_order set
+		deleteStatus = #{deleteStatus}
+		where orderId = #{orderId}
+	</update>
+	
+	<!-- 9.修改退款状态 -->
+	<update id="updateOrderRefundStatus" parameterType="OrderDto">
+		update t_commodity_order set
+		refundStatus = #{refundStatus}, refundTime = #{refundTime}
+		where orderId = #{orderId} and orderStatus != 1
+	</update>
+	
+	<!-- 10.addHis添加订单消费记录 -->
+	<insert id="addHis" parameterType="OrderDto" >
+		insert into t_expense_his (hisId, userId, orderNo, orderTime, cashAmount, walletCoinId, walletCoinAmount, walletCouponId, walletVggleAmount, useCahs)
+		values
+		
+		(#{hisId}, #{userId}, #{orderNo}, #{orderTime}, #{cahsAmount}, #{walletCoinId}, #{walletCoinAmount}, #{walletCouponId}, #{walletVggleAmount}, #{useCahs})
+	</insert>
+	
+	<!-- 11.根据订单编号查询订单 -->
+	<select id="queryOrderByOrderNo" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where orderNo = #{orderNo}
+	
+	</select>
+	
+	<!-- 12.根据订单编号修改订单状态 -->
+	<update id="updateOrderStatusByOrderNo" parameterType="OrderDto">
+		update t_commodity_order set
+			orderStatus = #{orderStatus}, payTime = #{payTime} where orderNo = #{orderNo}
+	</update>
+	
+	<!-- 13.根据订单ID得到订单对象 -->
+	<select id="queryOrderByOrderId" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where orderId = #{orderId}
+	</select>
+	
+	<!-- 14.根据评价状态获得评价订单 -->
+	<select id="queryOrderByNoDiscuss" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where discussStatus = #{discussStatus} and userId = #{userId} and deleteStatus = #{deleteStatus}
+	</select>
+	
+	<!-- 15.管理员查询订单  根据状态 -->
+ 	<select id="queryOrderByStatus" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where orderStatus = #{orderStatus}
+	</select>
+
+	<!-- 16.查询所有订单 -->
+	<select id="queryAllOrder" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order
+	</select>
+	
+	<!-- 17.根据评论状态查询所有订单 -->
+	<select id="queryAllOrderByDisuss" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where discussStatus = #{discussStatus}
+	</select>
+
+	<!-- 18.根据删除状态查询所有订单 -->
+	<select id="queryAllOrderByDelete" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where deleteStatus = #{deleteStatus}
+	</select> 
+	
+	<!-- 19. 根据订单完成日期查询订单  -->
+	<select id="queryAllOrderByDate" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where payTime > #{payTime}
+	</select>
+	
+	<!-- 20.修改订单编号 -->
+	<update id="updataOrderNoById" parameterType="OrderDto">
+		update t_commodity_order set orderNo = #{orderNo} where orderId = #{orderId}
+	</update>
+	
+	
+	<!-- ============== 后台管理操作订单============== -->
+	<!-- 20.企业查询所有订单 -->
+	<select id="queryAllOrderByCompanyId" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where companyId = #{companyId}
+	</select>
+	
+	<!-- 21.根据订单状态查询企业订单 -->
+	<select id="queryOrderByCompanyIdAndOrderStatus" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where companyId = #{companyId} and orderStatus = #{orderStatus}
+	</select>
+	
+	<!-- 22.根据订单ID查询企业订单 -->
+	<select id="queryOrderByCompanyIdAndOrderId" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where companyId = #{companyId} and orderId = #{orderId}
+	</select>
+	
+	<!-- 23.根据订单评论状态查询企业订单 -->
+	<select id="queryOrderByCompanyIdAndDiscussStatus" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where companyId = #{companyId} and discussStatus = #{discussStatus}
+	</select>
+	
+	<!-- 24.根据订单删除状态查询企业订单 -->
+	<select id="queryOrderByCompanyIdAndDeleteStatus" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where companyId = #{companyId} and deleteStatus = #{deleteStatus}
+	</select>
+	
+	<!-- 25. 根据订单完成日期查询订单  -->
+	<select id="queryOrderByCompanyIdAndPayTime" parameterType="OrderDto" resultType="OrderDto">
+		select * from t_commodity_order where payTime > #{payTime}
+	</select>
+	
+	<!-- 26. 商家删除订单 -->
+	<delete id="deleteOrderByCompanyId" parameterType="OrderDto">
+		delete from t_commodity_order where orderId = #{orderId} and deleteStatus = 1
+	</delete>
+</mapper>

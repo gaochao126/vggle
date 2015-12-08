@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.commodity.size.SizeDao">
+	<!-- 1.通过ID查询商品尺码 -->
+	<select id="querySizeByClohtId" parameterType="SizeDto" resultType="SizeDto">
+		select * from t_commodity_cloth_size where clothId = #{clothId}
+	</select>
+	
+	<!-- 2.添加尺码库存 -->
+	<insert id="addSizeSku" parameterType="SsDto">
+	insert into t_commodity_cloth_size_sku (ssId, imageId, commodityId, size, sku)
+			values
+	(#{ssId}, #{imageId}, #{commodityId}, #{size}, #{sku})
+	</insert>
+	
+	<!-- 3.查询商品对应尺码大小集合 -->
+	<select id="querySsByCommodityId" parameterType="SsDto" resultType="SsDto">
+		select * from t_commodity_cloth_size_sku where commodityId = #{commodityId}
+	</select>
+	
+	<!-- 4.通过颜色图片ID和尺码得到库存记录 -->
+	<select id="queryByImageIdAndSize" parameterType="SsDto" resultType="SsDto">
+		select * from t_commodity_cloth_size_sku where imageId = #{imageId} and size = #{size}
+	</select>
+	
+	<!-- 5.修改库存 -->
+	<update id="updataSkuByImageIdAmdSizeDown" parameterType="SsDto">
+		update t_commodity_cloth_size_sku set sku = sku - #{sku} where imageId = #{imageId} and size = #{size}
+	</update>
+	
+</mapper>

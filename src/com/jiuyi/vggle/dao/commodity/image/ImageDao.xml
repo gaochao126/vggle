@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.commodity.image.ImageDao">
+	<!-- 1.通过ID查询 粮油干货商品-->
+	<select id="queryAllImageById" parameterType="FoodParams" resultType="FoodImg">
+		select * from t_commodity_image_food
+		<where>
+			foodId = #{foodId}
+		</where>
+	</select>
+	
+	<!-- 2.通过商品ID查询服装鞋帽配饰 -->
+	<select id="queryAllImageByClothId" parameterType="ClothParams" resultType="ClothImg">
+		select * from t_commodity_image_cloth where clothId = #{clothId}
+	</select>
+	
+	<!-- 3.根据图片ID查询服装图片对象 -->
+	<select id="queryClothImgByImgId" parameterType="ClothImg" resultType="ClothImg">
+		select * from t_commodity_image_cloth where imageId = #{imageId}
+	</select>
+	
+	<!-- 4.添加绿色食品类图片对象 -->
+	<insert id="addFoodImg" parameterType="FoodImg">
+		insert into t_commodity_image_food (imageId, foodId, ImageUrl, imageType)
+		values 
+		(#{imageId}, #{foodId}, #{ImageUrl}, #{imageType})
+	</insert>
+	
+	<!-- 5.添加服装鞋帽类商品图片对象 -->
+	<insert id="addClothImg" parameterType="ClothImg">
+		insert into t_commodity_image_cloth (imageId, clothId, colorName, imageName, imageType)
+		values
+		(#{imageId}, #{clothId}, #{colorName}, #{imageName}, #{imageType})
+	</insert>
+</mapper>
