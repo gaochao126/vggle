@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.code.CodeDao">
+	<!-- 1.查询所有验证码 -->
+	<select id="queryAllCode" parameterType="CodeDto" resultType="CodeDto">
+		select * from t_code 
+	</select>
+	
+	<!-- 1.查询所有验证码 -->
+	<select id="queryCodeById" parameterType="CodeDto" resultType="CodeDto">
+		select * from t_code where codeId = #{codeId}
+	</select>
+</mapper>

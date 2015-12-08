@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.user.UserDao">
+	<select id="queryUserByPhone" parameterType="UserDto" resultType="UserDto">
+		select * from t_user
+		<where>
+			phone = #{phone}
+		</where>
+	</select>
+	
+	<select id="queryUserById" parameterType="UserDto" resultType="UserDto">
+		select * from t_user
+		<where>
+			id = #{id}
+		</where>
+	</select>
+	
+	<insert id="register" parameterType="UserDto">
+		insert into t_user (phone, password) values (#{phone}, #{password})
+	</insert>
+	
+	<update id="editUserInfo" parameterType="UserDto">
+		update t_user set id = #{id}
+		<if test="nickname != null">
+			, nickname = #{nickname}
+		</if>
+		<if test="realName != null">
+			, realName = #{realName}
+		</if>
+		<if test="email != null">
+			, email = #{email}
+		</if>
+		<if test="headPortrait != null">
+			, headPortrait = #{headPortrait}
+		</if>
+		<if test="gender != null">
+			, gender = #{gender}
+		</if>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<update id="updateUserWalletPass" parameterType="UserDto">
+		update t_user
+		set walletPass = #{walletPass} where id = #{id}
+	</update>
+	
+	<update id="updataPass" parameterType="UserDto">
+		update t_user set password = #{password} where phone = #{phone}
+	</update>
+	
+	<update id="updataPassById" parameterType="UserDto">
+		update t_user set password = #{password} where id = #{id}
+	</update>
+	
+	<select id="queryAllUser" parameterType="UserDto" resultType="UserDto">
+		select * from t_user
+	</select>
+	
+	<update id="editHead" parameterType="UserDto">
+		update t_user set headPortrait = #{headPortrait} where id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.discuss.DiscussDao">
+	<!-- 1.添加评论 -->
+	<insert id="addDiscuss" parameterType="DiscussDto">
+		insert into t_commodity_discuss (disId, userId, commodityId, userName, disTime, disMess, commodScore, serviceScore, transScore, type, disStatus)
+		values
+		(#{disId}, #{userId}, #{commodityId}, #{userName}, #{disTime}, #{disMess}, #{commodScore}, #{serviceScore}, #{transScore}, #{type}, #{disStatus})
+	</insert>
+	
+	<!-- 2.查询商品评论 -->
+	<select id="queryDiscussByCommodityId" parameterType="DiscussDto" resultType="DiscussDto">
+		select * from t_commodity_discuss
+		<where>
+			commodityId = #{commodityId}
+		</where>
+	</select>
+	
+	<!-- 3.查询用户评论 -->
+	<select id="queryDiscussByUserId" parameterType="DiscussDto" resultType="DiscussDto">
+		select * from t_commodity_discuss
+		<where>
+			userId = #{userId}
+		</where>
+	</select>
+	
+	<!-- 4.修改评论状态 -->
+	<update id="updateDiscussStatus" parameterType="DiscussDto">
+		update t_commodity_discuss set
+			disStatus = #{disStatus}
+		<where>
+			disId = #{disId}
+		</where>
+	</update>
+</mapper>

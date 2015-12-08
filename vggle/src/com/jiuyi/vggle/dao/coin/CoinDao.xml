@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.coin.CoinDao">
+ 	<!-- 1.添加礼券卡 -->
+ 	<insert id="addCoinDto" parameterType="CoinDto">
+ 		insert into t_vggle_coin (coinId, coinPass, amount, createTime, validity, useTime, coinStatus, coinPhone, source, type)
+ 		values
+ 		(#{coinId},#{coinPass},#{amount},#{createTime},#{validity},#{useTime},#{coinStatus},#{coinPhone},#{source}, #{type})
+ 	</insert>
+ 	
+ 	<!-- 2.修改礼券卡金额(增加) -->
+ 	<update id="updateCoinAmountup" parameterType="CoinDto">
+ 		update t_vggle_coin 
+ 			set amount = amount + #{amount}
+ 		<where>
+ 			amount >= #{amount}
+ 			and coinPhone = #{coinPhone}
+ 		</where>
+ 	</update>
+ 	
+ 	<!-- 3.修改礼券卡金额(减少) 全部减少 -->
+ 	<update id="updateCoinAmountdown" parameterType="CoinDto">
+ 		update t_vggle_coin
+ 			set amount = amount - #{amount}, coinStatus = #{coinStatus}
+ 		<where>		
+ 			amount >= #{amount}
+ 			and coinPhone = #{coinPhone}
+ 		</where>		
+ 	</update>
+ 	
+ 	<!-- 4.修改礼品卡金额，全部金额，通过ID -->
+ 	<update id="updateCoinAmountdownByCoinId" parameterType="CoinDto">
+ 		update t_vggle_coin
+ 			set amount = 0, coinStatus = 2 where  coinId = #{coinId}
+ 		
+ 	</update>
+ 	
+ 	<!-- 5.修改礼券卡金额(减少) 部分减少 -->
+ 	<update id="updateCoinAmountdownSome" parameterType="CoinDto">
+ 		update t_vggle_coin
+ 			set amount = amount - #{amount}
+ 		<where>		
+ 			and coinId = #{coinId}
+ 		</where>		
+ 	</update>
+ 	
+ 	<!-- 6.通过密码修改礼券卡手机号和礼品卡状态 (兑换实体礼品卡)-->
+ 	<update id="updateCoinPhoneAndStatus" parameterType="CoinDto">
+ 		update t_vggle_coin
+ 			set coinPhone = #{coinPhone}, coinStatus = #{coinStatus}
+ 			where coinPass = #{coinPass}
+ 	</update>
+ 	
+ 	<!-- 7.通过ID修改礼券卡手机号 -->
+ 	<update id="updateCoinPhoneById" parameterType="CoinDto">
+ 		update t_vggle_coin
+ 			set coinPhone = #{coinPhone}
+ 		<where>
+ 			coinId = #{coinId}
+ 		</where>
+ 	</update>
+ 	
+ 	<!-- 8.删除礼券 -->
+ 	<delete id="deleteCoin" parameterType="CoinDto">
+ 		delete from t_vggle_coin
+ 		<where>
+ 			coinId = #{coinId}
+ 		</where>
+ 	</delete>
+ 	
+ 	<!-- 9.修改礼券卡手机号和金额 -->
+ 	<update id="updateCoinPhoneAndAmount" parameterType="CoinDto">
+ 		update t_vggle_coin 
+ 			set amount = #{amount},coinPhone = #{coinPhone}
+ 		<where>
+ 			coinPass = #{coinPass}
+ 		</where>
+ 	</update>
+ 	
+ 	<!-- 10.通过礼品卡密码查询礼品卡对象   -->
+ 	<select id="queryCoinByCoinPass" parameterType="CoinDto" resultType="CoinDto">
+ 		select * from t_vggle_coin
+ 		<where>
+ 			coinPass = #{coinPass}
+ 		</where>
+ 	</select>
+ 	
+ 	<!-- 11.通过礼品卡ID查询礼品卡对象   -->
+ 	<select id="queryCoinByCoinId" parameterType="CoinDto" resultType="CoinDto">
+ 		select * from t_vggle_coin
+ 		where coinId = #{coinId}
+ 	</select>
+ 	
+ 	<!-- 12.通过ID修改礼品卡状态  -->
+ 	<update id="updateCoinStatusById" parameterType="CoinDto">
+ 		update t_vggle_coin
+ 			set  coinStatus = #{coinStatus}
+ 		<where>
+ 			coinId = #{coinId}
+ 		</where>
+ 	</update>
+ 	
+ 	<!-- 13.通过手机号查询用户礼品卡账户 -->
+ 	<select id="queryCoinByPhone" parameterType="CoinDto" resultType="CoinDto">
+ 		select * from t_vggle_coin where coinPhone = #{coinPhone} and coinStatus = #{coinStatus};
+ 	</select>
+ 	
+ 	<!-- 14.通过手机号查询用户礼品卡账户钱包页面 -->
+ 	<select id="queryCoinByPhoneWalletPage" parameterType="CoinDto" resultType="CoinDto">
+ 		select * from t_vggle_coin where coinPhone = #{userPhone} and coinStatus = #{coinStatus};
+ 	</select>
+ 	
+	<!-- 15.查询用户面值最大的礼品卡 -->
+	<select id="queryCoinMaxAmount" parameterType="CoinDto" resultType="CoinDto">
+		select * from t_vggle_coin 
+			where coinPhone = #{coinPhone} and coinStatus = 1 order by amount desc LIMIT 1
+	</select>
+	
+	<!-- 16.根据礼品卡状态，使用方式，查询礼品卡 -->
+	<select id="queryCoinByTypeAndSourceAndCoinStatus" parameterType="CoinDto" resultType="CoinDto">
+		select * from t_vggle_coin where type = #{type} and source = #{source} and coinStatus = #{coinStatus}
+	</select>
+ 	
+ 	<!-- 17.激活礼品卡 -->
+ 	<update id="updataCoinStatusAndCreateAndValidity" parameterType="CoinDto">
+ 		update t_vggle_coin set coinStatus = #{coinStatus}, createTime = #{createTime}, validity = #{validity} where no = #{no}
+ 	</update>
+ 	
+ 	<!-- 18.通过礼品卡编号查询礼品卡 -->
+ 	<select id="queryCoinByNo" parameterType="CoinDto" resultType="CoinDto"> 
+ 		select * from t_vggle_coin where no = #{no}
+ 	</select>
+ 	
+ 	<!-- 19.修改礼品卡虚拟卡，实体卡状态 -->
+ 	<update id="updateCoinSource" parameterType="CoinDto">
+ 		update t_vggle_coin set source = #{source} where no = #{no}
+ 	</update>
+</mapper>

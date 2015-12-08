@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.commodity.CommodityDao">
+
+	<!-- ================================================= -->
+	<!-- table:t_commodity_foods   绿色食品粮油干货产品表                                        -->
+	<!-- ================================================  -->
+	
+	<!-- 1.查询所有粮油干货产品 select * from t_commodity as t1 inner join t_commodity_food as t2 on t1.commodityId = t2.commodityId -->
+	<select id="queryFoodParamsAll" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where deleteStatus = 0
+	</select>
+	
+	<!-- 2.查询粮油分类里面的二级分类查询商品 eg: 10,五谷杂粮; 11,油盐酱醋; 12,干货; 13,水果蔬菜. -->
+	<select id="queryCommodByFoodKind" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods 
+		<where>
+			secondId = #{secondId}
+		</where>
+	</select>
+	
+	<!-- 3.通过商品名字、拼音、查询粮油干货 -->
+	<select id="queryCommodByCommodName" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods 
+		<where>
+			<if test="foodName!=null">  
+              foodName like CONCAT('%','${foodName}','%' )  and deleteStatus = 0
+            </if>  		
+		</where>
+	</select>
+	
+	<!-- 4.通过ID和类型获得商品详情 -->
+	<select id="queryFoodById" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods 
+		<where>
+			foodId = #{foodId}
+		</where>
+	</select>
+	
+	<!-- 5.修改绿色食品库存 -->
+	<update id="updataFoodSku" parameterType="FoodParams">
+		update t_commodity_foods set foodSku = foodSku - #{foodSku} where foodId = #{foodId}
+	</update>
+	
+	<!-- 6.获得绿色食品类精品推荐 -->
+	<select id="queryShowFood" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where deleteStatus = 0 order by foodSales LIMIT 6 
+	</select>
+	
+	<!-- 7.添加绿色食品 -->
+	<insert id="addFood" parameterType="FoodParams">
+		insert into t_commodity_foods (foodId, foodName, foodPinyin, type, secondId, thirdId, businessName, foodDetail, foodSales, indexSrc, prodLicenum, factoryName,
+		            factoryAddr, contact, keepDate, creatDate, foodAdditive, packWay, burden, brand, format, storeWay, inlet, barcode, price, foodSku, discount, deleteStatus, companyId, onvggleTime)
+		       values
+		       (#{foodId}, #{foodName}, #{foodPinyin}, #{type}, #{secondId}, #{thirdId}, #{businessName}, #{foodDetail}, #{foodSales}, #{indexSrc}, #{prodLicenum}, #{factoryName},
+		       #{factoryAddr}, #{contact}, #{keepDate}, #{creatDate}, #{foodAdditive}, #{packWay}, #{burden}, #{brand}, #{format}, #{storeWay}, #{inlet}, #{barcode}, #{price}, #{foodSku}, #{discount}, #{deleteStatus}, #{companyId}, #{onvggleTime})
+	</insert> 
+	
+	<!-- 8.修改绿色食品 -->
+ 	<update id="updateFood" parameterType="FoodParams">
+		update t_commodity_foods set 
+			<if test="foodName != null ">
+				foodName = #{foodName}, 
+			</if>
+			<if test="foodPinyin !=null ">
+				foodPinyin = #{foodPinyin},
+			</if>
+			<if test="type != null">
+				type = #{type},
+			</if>
+			<if test="secondId != null">
+				secondId = #{secondId},
+			</if>
+			<if test=" thirdId != null">
+				thirdId = #{thirdId},
+			</if>
+			<if test=" businessName != null">
+				businessName = #{businessName},
+			</if>
+			<if test=" foodDetail != null">
+				foodDetail = #{foodDetail},
+			</if>
+			<if test=" foodSales != null">
+				foodSales = #{foodSales},
+			</if>
+			<if test=" prodLicenum != null">
+				prodLicenum = #{prodLicenum},
+			</if>
+			<if test=" factoryName != null">
+			 	factoryName = #{factoryName},
+			</if>
+			<if test=" factoryAddr != null">
+				factoryAddr = #{factoryAddr},
+			</if>
+			<if test=" contact != null">
+				contact = #{contact},
+			</if>
+			<if test=" keepDate != null">
+				keepDate = #{keepDate},
+			</if>
+			<if test=" creatDate != null">
+				creatDate = #{creatDate},
+			</if>
+			<if test=" foodAdditive != null">
+				foodAdditive = #{foodAdditive},
+			</if>
+			<if test=" packWay != null">
+				packWay = #{packWay},
+			</if>
+			<if test=" burden != null">
+				burden = #{burden},
+			</if>
+			<if test=" brand != null">
+				brand = #{brand},
+			</if>
+			<if test=" format != null">
+				format = #{format},
+			</if>
+			<if test=" storeWay != null">
+				storeWay = #{storeWay},
+			</if>
+			<if test=" inlet != null">
+				inlet = #{inlet},
+			</if>
+			<if test=" barcode != null">
+				barcode = #{barcode},
+			</if>
+			<if test=" price != null">
+				price = #{price},
+			</if>
+			<if test=" foodSku != null">
+				foodSku = #{foodSku},
+			</if>
+			<if test=" discount != null">
+				discount = #{discount},
+			</if>
+			<if test=" deleteStatus != null">
+				deleteStatus = #{deleteStatus},
+			</if>
+			<if test=" companyId != null">
+				companyId = #{companyId},
+			</if>
+			<if test=" discount != null">
+				onvggleTime = #{onvggleTime}
+			</if>
+			where foodId = #{foodId}
+	</update> 
+	
+	<!-- 9.修改绿色食品销量 -->
+	<update id="updateFoodSales" parameterType="FoodParams">
+		update t_commodity_foods set foodSales = foodSales + #{foodSales} where foodId = #{foodId}
+	</update>
+	
+	<!-- 10.修改商品首页展示图片名称 -->
+	<update id="updateFoodIndexSrc" parameterType="FoodParams">
+		update t_commodity_foods set indexSrc = #{indexSrc} where foodId = #{foodId}
+	</update>
+	
+	<!-- 11.商家查询属于自己的商品 -->
+	<select id="queryFoodByCompanyId" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where companyId = #{companyId}
+	</select>
+	
+	<!-- 12.商家查询库存为0的商品 -->
+	<select id="queryFoodByCompanyIdAndSku" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where companyId = #{companyId} and foodSku = 0
+	</select>
+	
+	<!-- 13.商家按销量升序查询商品 -->
+	<select id="queryFoodByCompanyIdAndSaleUp" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where companyId = #{companyId} order by foodSales asc 
+	</select>
+	
+	<!-- 14.商家按销量降序查询商品 -->
+	<select id="queryFoodByCompanyIdAndSaleDown" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where companyId = #{companyId} order by foodSales desc 
+	</select>
+	
+	
+	<!-- 15.商家按库存升序查询商品 -->
+	<select id="queryFoodByCompanyIdAndSkuUp" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where companyId = #{companyId} order by foodSku asc 
+	</select>
+	
+	<!-- 16.商家按库存降序查询商品 -->
+	<select id="queryFoodByCompanyIdAndSkuDown" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where companyId = #{companyId} order by foodSku desc 
+	</select>
+	
+	
+	<!-- 17.商家按上架时间升序查询商品 -->
+	<select id="queryFoodByCompanyIdAndOnvggleTimeUp" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where companyId = #{companyId} order by onvggleTime asc 
+	</select>
+	
+	<!-- 18.商家按上架时间降序查询商品 -->
+	<select id="queryFoodByCompanyIdAndOnvggleTimeDown" parameterType="FoodParams" resultType="FoodParams">
+		select * from t_commodity_foods where companyId = #{companyId} order by onvggleTime desc 
+	</select>
+	
+	<!-- ================================================= -->
+	<!-- table:t_commodity_cloth   服装鞋帽配置表                                        -->
+	<!-- ================================================= -->
+	
+	<!-- 1.添加服装鞋帽配饰 -->
+	<insert id="addCloth" parameterType="ClothParams">
+		insert into t_commodity_clothing (clothId, clothName, clothPinyin, type, secondId, thirdId, season, sexKind, businessName, 
+			clothDetail, clothSales, clothImg, factoryName, factoryAddr, pattern, style, price, discount, brand, material, labels, deleteStatus, companyId, onvggleTime)
+		values
+			(#{clothId}, #{clothName}, #{clothPinyin}, #{type}, #{secondId}, #{thirdId}, #{season}, #{sexKind}, #{businessName}, 
+			#{clothDetail}, #{clothSales}, #{clothImg}, #{factoryName}, #{factoryAddr}, #{pattern}, #{style}, #{price}, #{discount}, 
+			#{brand}, #{material}, #{labels}, #{deleteStatus}, #{companyId}, #{onvggleTime})
+	</insert>
+	
+	
+	<!-- 2.查询所有服装鞋帽配饰商品 -->
+	<select id="queryAllClothParams" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where deleteStatus = 0
+	</select>
+	
+	<!-- 3.通过二级分类查询服装鞋帽系类产品 -->
+	<select id="queryClothBySecondId" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where secondId = #{secondId} where deleteStatus = 0
+	</select>
+	
+	<!-- 4.通过关键字查询服装鞋帽系类产品 -->
+	<select id="queryClothByKeyWord" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing 
+		<where>
+			<if test="clothName!=null">  
+              clothName like CONCAT('%','${clothName}','%' ) and deleteStatus = 0
+            </if>  		
+		</where>
+	</select>
+	
+	<!-- 5.通过商品ID查询服装鞋帽配饰对象 -->
+	<select id="queryClothByClothId" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where clothId = #{clothId}
+	</select>
+	
+	<!-- 6.修改服装鞋帽配饰库存 -->
+	<update id="updataClothSku" parameterType="ClothParams">
+		update t_commodity_clothing set clothSku = clothSku - #{clothSku} where clothId = #{clothId}
+	</update>                            
+	
+	<!-- 7.获得服装鞋帽精品推荐 -->
+	<select id="queryShowCloth" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where deleteStatus = 0 order by clothSales LIMIT 4 
+	</select>
+	
+	<!-- 8.修改服装鞋帽类 -->
+	<update id="updateCloth" parameterType="ClothParams">
+		update t_commodity_clothing set
+		<if test=" clothName != null">
+			clothName = #{clothName},
+		</if>
+		<if test=" clothPinyin != null">
+			clothPinyin = #{clothPinyin},
+		</if>
+		<if test=" type != null">
+			type = #{type},
+		</if>
+		<if test=" secondId != null">
+			secondId = #{secondId},
+		</if>
+		<if test=" thirdId != null">
+			thirdId = #{thirdId},
+		</if>
+		<if test=" season != null">
+			season = #{season},
+		</if>
+		<if test=" sexKind != null">
+			sexKind = #{sexKind},
+		</if>
+		<if test=" businessName != null">
+			businessName = #{businessName},
+		</if>
+		<if test=" clothDetail != null">
+			clothDetail = #{clothDetail},
+		</if>
+		<if test=" clothSales != null">
+			clothSales = #{clothSales},
+		</if>
+		<if test=" factoryName != null">
+			factoryName = #{factoryName},
+		</if>
+		<if test=" factoryAddr != null">
+			factoryAddr = #{factoryAddr},
+		</if>
+		<if test=" pattern != null">
+			pattern = #{pattern},
+		</if>
+		<if test=" style != null">
+			style = #{style},
+		</if>
+		<if test=" clothSku != null">
+			clothSku = #{clothSku},
+		</if>
+		<if test=" discount != null">
+			discount = #{discount},
+		</if>
+		<if test=" brand != null">
+			brand = #{brand},
+		</if>
+		<if test=" material != null">
+			material = #{material},
+		</if>
+		<if test=" labels != null">
+			labels = #{labels},
+		</if>
+		<if test=" deleteStatus !=null">
+			deleteStatus = #{deleteStatus},
+		</if>
+		<if test=" companyId != null">
+			companyId = #{companyId},
+		</if>
+		<if test=" onvggleTime !=null">
+			onvggleTime = #{onvggleTime}
+		</if>
+		where clothId = #{clothId}
+	</update>
+	 
+	<!-- 9.修改服装鞋帽销量 -->
+	<update id="updateClothSales" parameterType="ClothParams">
+		update t_commodity_clothing set clothSales = clothSales + #{clothSales} where clothId = #{clothId}
+	</update> 
+	
+	<!-- 10.更改服装类商品图片名字 -->
+	<update id="updateClothImg" parameterType="ClothParams">
+		update t_commodity_clothing set clothImg = #{clothImg} where clothId = #{clothId}
+	</update>
+	
+	<!-- 11.商家查询属于自己的商品 -->
+	<select id="queryClothByCompanyId" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where companyId = #{companyId}
+	</select>
+	
+	<!-- 12.商家查询库存为0的商品 -->
+	<select id="queryClothByCompanyIdAndSku" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where companyId = #{companyId} and clothSku = 0
+	</select>
+	
+	<!-- 13.商家查询商品按销量升序 -->
+	<select id="queryClothByCompanyIdAndSaleUp" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where companyId = #{companyId} order by clothSales asc 
+	</select>
+	
+	<!-- 14.商家查询商品按销量降序 -->
+	<select id="queryClothByCompanyIdAndSaleDown" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where companyId = #{companyId} order by clothSales desc 
+	</select>
+	
+	
+	<!-- 15.商家查询商品按库存升序 -->
+	<select id="queryClothByCompanyIdAndSkuUp" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where companyId = #{companyId}  
+	</select>
+	
+	<!-- 16.商家查询商品按库存降序 -->
+	<select id="queryClothByCompanyIdAndSkuDown" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where companyId = #{companyId}  
+	</select>
+	
+	
+	<!-- 17.商家查询商品按上架时间升序 -->
+	<select id="queryClothByCompanyIdAndOnvggleTimeUp" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where companyId = #{companyId} order by onvggleTime asc 
+	</select>
+	
+	<!-- 18.商家查询商品按上架时间降序 -->
+	<select id="queryClothByCompanyIdAndOnvggleTimeDown" parameterType="ClothParams" resultType="ClothParams">
+		select * from t_commodity_clothing where companyId = #{companyId} order by onvggleTime desc 
+	</select>
+	
+</mapper>

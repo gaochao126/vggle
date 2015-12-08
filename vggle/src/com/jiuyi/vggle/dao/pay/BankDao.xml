@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.pay.BankDao">
+	<!-- 1.查询快捷支付银行列表 -->
+	<select id="queryQuickBanks" resultType="BankDto">
+		select bankId, bankName, bankNo, logoUrl, supportType from t_bank
+		<where>
+			status = 1 and kind = 0
+		</where>
+	</select>
+	
+	<!-- 2.查询网银支付银行列表 -->
+	<select id="queryOnlineBanks" resultType="BankDto">
+		select bankId, bankName, bankNo, logoUrl, supportType from t_bank
+		<where>
+			status = 1 and kind = 1
+		</where>
+	</select>
+	
+	<!-- 3.通过银行号获得银行图标 -->
+	<select id="queryOnlineBanksByBankNo" parameterType="BankDto" resultType="BankDto">
+		select * from t_bank where bankNo = #{bankNo}
+	</select>
+</mapper>

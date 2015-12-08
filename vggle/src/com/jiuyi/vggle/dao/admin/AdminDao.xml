@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiuyi.vggle.dao.admin.AdminDao">
+	<!-- 1.注册 -->
+	<insert id="adminRegister" parameterType="UserDto">
+		insert into t_admin ( nickname, password, sex, phone, card, headPortrait, companyId, companyName, permissionGrade, havePermission, createId, gradeInfo)
+		values 
+		( #{nickname}, #{password}, #{sex}, #{phone}, #{card}, #{headPortrait}, #{companyId}, #{companyName}, #{permissionGrade}, #{havePermission}, #{createId}, #{gradeInfo})
+	</insert>
+
+	<!-- 2.登录 -->
+	<select id="queryByPhoneAndPassword" parameterType="UserDto" resultType="UserDto">
+		<!-- select * from t_admin where phone = #{phone} and password = #{password} and permission = #{permission} -->
+		select * from t_admin where phone = #{phone} and password = #{password} 
+		
+	</select>
+	
+	<!-- 3.用过ID查询用户对象 -->
+	<select id="queryAdminById" resultType="UserDto">
+		select * from t_admin where id = #{id}
+	</select>
+	
+	<!-- 4.查询权限详情 -->
+	<select id="queryPermission" parameterType="PermissionDetailDto" resultType="PermissionDetailDto">
+		select * from t_permission_detail 
+	</select>
+	
+	<!-- 5.通过权限ID查询权限对象 -->
+	<select id="queryPermissionById" parameterType="PermissionDetailDto" resultType="PermissionDetailDto">
+		select * from t_permission_detail where permissionId = #{permissionId}
+	</select>
+	
+	<!-- 6.修改管理员信息 -->
+	<update id="updateAdmin" parameterType="userDto">
+		update t_admin set
+		<if test="nickname != null">
+			nickname = #{nickname},
+		</if>
+		<if test="sex != null">
+			sex = #{sex},
+		</if>
+		<if test="card != null">
+			card = #{card}
+		</if>
+		where id = #{id} and permissionGrade = #{permissionGrade}
+	</update>
+	
+	<!-- 7.修改管理员权限 -->
+	<update id="alterPermission" parameterType="userDto">
+		update t_admin set havePermission = #{havePermission} where id = #{anotherId} 
+	</update>
+	
+	<!-- 8.删除管理员 -->
+	<delete id="deleteAdmin" parameterType="userDto">
+		delete from t_admin where id = #{id}
+	</delete>
+	
+	<!-- 9.用过ID查询用户对象 -->
+	<select id="queryAdminByAnotherId" resultType="UserDto">
+		select * from t_admin where id = #{anotherId}
+	</select>
+	
+	<!-- 10.通过创建者ID查询管理员集合 -->
+	<select id="queryAdminByCreateId" parameterType="UserDto" resultType="UserDto">
+		select * from t_admin where createId = #{createId}
+	</select>
+	
+	<!-- 11.通过手机号查询管理员对象 -->
+	<select id="queryAdminByPhone" parameterType="UserDto" resultType="UserDto">
+		select * from t_admin where phone = #{phone}
+	</select>
+</mapper>
